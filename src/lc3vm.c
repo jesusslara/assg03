@@ -88,6 +88,14 @@ uint16_t PC_START = 0x3000;
  *    value.
  */
 // put your implememtation of sign_extend() here below it documentation
+uint16_t sign_extend(uint16_t bits, int sign_position)
+{
+    // If the sign bit is 1, extend with 1s
+    if ((bits >> sign_position) & 1) {
+        bits |= (0xFFFF << sign_position);
+    }
+    return bits;
+}
 
 /** @brief update condition register flags
  *
