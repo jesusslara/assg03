@@ -200,6 +200,22 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of ldi() here below it documentation
+void ldi(uint16_t i)
+{
+    uint16_t dr = DR(i);          // destination register
+    uint16_t pc_offset = OFF9(i); // 9-bit signed offset
+
+    pc_offset = sign_extend(pc_offset, 9);
+
+    // First memory read: get the indirect address
+    uint16_t address1 = reg[RPC] + pc_offset;
+    uint16_t address2 = mem_read(address1);
+
+    // Second memory read: load the value from the indirect address
+    reg[dr] = mem_read(address2);
+
+    update_flags(dr);
+}
 
 /** @brief load base + relative offset
  * 
