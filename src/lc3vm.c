@@ -103,6 +103,21 @@ uint16_t PC_START = 0x3000;
  *   updated as a side effect of the operation just performed.
  */
 // put your implememtation of update_flags() here below it documentation
+void update_flags(int modified_register)
+{
+    uint16_t value = reg[modified_register];
+
+    if (value == 0) {
+        reg[RCND] = FZ;          // Zero flag
+    }
+    else if (value >> 15) {      // Check sign bit (bit 15)
+        reg[RCND] = FN;          // Negative flag
+    }
+    else {
+        reg[RCND] = FP;          // Positive flag
+    }
+}
+
 
 /** @brief add operation
  *
