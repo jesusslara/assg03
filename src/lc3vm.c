@@ -323,6 +323,24 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of jsr() here below its documentation
+void jsr(uint16_t i)
+{
+    // Save the current PC into R7
+    reg[R7] = reg[RPC];
+
+    // Check bit 11 to determine JSR vs JSRR
+    if (FL(i)) {
+        // JSR: PC-relative jump using OFF11
+        uint16_t pc_offset = i & 0x7FF;   // bits 10–0
+        pc_offset = sign_extend(pc_offset, 11);
+        reg[RPC] += pc_offset;
+    }
+    else {
+        // JSRR: Jump to address in base register SR1
+        uint16_t base = SR1(i);
+        reg[RPC] = reg[base];
+    }
+}
 
 /** @brief return from interrupt
  *
