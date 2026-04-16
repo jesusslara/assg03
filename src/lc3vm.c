@@ -216,6 +216,20 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of ldr() here below it documentation
+void ldr(uint16_t i)
+{
+    uint16_t dr  = DR(i);       // destination register
+    uint16_t sr1 = SR1(i);      // base register
+    uint16_t offset = OFF6(i);  // 6-bit signed offset
+
+    offset = sign_extend(offset, 6);
+
+    uint16_t address = reg[sr1] + offset;
+
+    reg[dr] = mem_read(address);
+
+    update_flags(dr);
+}
 
 /** @brief load effective address
  *
@@ -233,6 +247,17 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of lea() here below it documentation
+void lea(uint16_t i)
+{
+    uint16_t dr = DR(i);
+    uint16_t pc_offset = OFF9(i);
+
+    pc_offset = sign_extend(pc_offset, 9);
+
+    reg[dr] = reg[RPC] + pc_offset;
+
+    update_flags(dr);
+}
 
 /** @brief store to PC + offset
  *
@@ -248,6 +273,17 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of st() here below it documentation
+void st(uint16_t i)
+{
+    uint16_t sr = DR(i);          // source register encoded in DR field
+    uint16_t pc_offset = OFF9(i);
+
+    pc_offset = sign_extend(pc_offset, 9);
+
+    uint16_t address = reg[RPC] + pc_offset;
+
+    mem_write(address, reg[sr]);
+}
 
 /** @brief store indirect
  *
@@ -264,6 +300,18 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of sti() here below it documentation
+void sti(uint16_t i)
+{
+    uint16_t sr = DR(i);          // source register
+    uint16_t pc_offset = OFF9(i);
+
+    pc_offset = sign_extend(pc_offset, 9);
+
+    uint16_t address1 = reg[RPC] + pc_offset;
+    uint16_t address2 = mem_read(address1);
+
+    mem_write(address2, reg[sr]);
+}
 
 /** @brief store offset relative to base address
  *
@@ -279,6 +327,18 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of str() here below it documentation
+void str(uint16_t i)
+{
+    uint16_t sr  = DR(i);         // source register
+    uint16_t base = SR1(i);       // base register
+    uint16_t offset = OFF6(i);
+
+    offset = sign_extend(offset, 6);
+
+    uint16_t address = reg[base] + offset;
+
+    mem_write(address, reg[sr]);
+}
 
 /** @brief jump unconditionally
  *
@@ -292,6 +352,11 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of jmp() here below its documentation
+void jmp(uint16_t i)
+{
+    uint16_t base = SR1(i);
+    reg[RPC] = reg[base];
+}
 
 /** @brief conditional branch
  *
@@ -310,6 +375,18 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of br() here below its documentation
+void br(uint16_t i)
+{
+    uint16_t nzp = NZP(i);        // bits 11–9
+    uint16_t pc_offset = OFF9(i);
+
+    pc_offset = sign_extend(pc_offset, 9);
+
+    // If any of the condition bits match RCND, branch
+    if (nzp & reg[RCND]) {
+        reg[RPC] += pc_offset;
+    }
+}
 
 /** @brief jump to/from subtroutine
  *
