@@ -18,6 +18,30 @@
 #define NUMOPS (16)
 
 // Need to #define all of your bit manipulation macros like DR, SR1, etc. here.
+// Extract opcode (bits 15–12)
+#define OPC(i)      (((i) >> 12) & 0xF)
+
+// Extract destination register (bits 11–9)
+#define DR(i)       (((i) >> 9) & 0x7)
+
+// Extract source register 1 (bits 8–6)
+#define SR1(i)      (((i) >> 6) & 0x7)
+
+// Extract source register 2 (bits 2–0)
+#define SR2(i)      ((i) & 0x7)
+
+// Extract immediate 5-bit value (bits 4–0)
+#define IMM5(i)     ((i) & 0x1F)
+
+// Extract immediate 6-bit offset (bits 5–0)
+#define OFF6(i)     ((i) & 0x3F)
+
+// Extract immediate 9-bit offset (bits 8–0)
+#define OFF9(i)     ((i) & 0x1FF)
+
+// Extract N/Z/P condition bits (bits 11–9)
+#define NZP(i)      (((i) >> 9) & 0x7)
+
 #define FIMM(i) ((i >> 5) & 0x1)
 #define FCND(i) (((i) >> 9) & 0x7)
 #define BR(i) (((i) >> 6) & 0x7)
