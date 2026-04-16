@@ -165,6 +165,15 @@ uint16_t PC_START = 0x3000;
  *   instruction.
  */
 // put your implememtation of notlc() here below it documentation
+void notlc(uint16_t i)
+{
+    uint16_t dr  = DR(i);     // destination register
+    uint16_t sr1 = SR1(i);    // source register
+
+    reg[dr] = ~reg[sr1];      // bitwise NOT
+
+    update_flags(dr);
+}
 
 /** @brief load RPC + offset
  *
