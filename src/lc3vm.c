@@ -488,6 +488,24 @@ void trap(uint16_t i)
  */
 // you need to declare the operator execution lookup table here.  This will be an
 // array of function pointers to your opcode microcode execution functions.
+op_ex_f optable[NUMOPS] = {
+    br,     // 0000
+    add,    // 0001
+    ld,     // 0010
+    st,     // 0011
+    jsr,    // 0100
+    andlc,  // 0101
+    ldr,    // 0110
+    str,    // 0111
+    rti,    // 1000
+    notlc,  // 1001
+    ldi,    // 1010
+    sti,    // 1011
+    jmp,    // 1100
+    res,    // 1101
+    lea,    // 1110
+    trap    // 1111
+};
 
 
 /** @brief start/run LC-3 simulator
