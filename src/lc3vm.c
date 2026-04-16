@@ -130,6 +130,25 @@ uint16_t PC_START = 0x3000;
  *   instruction.
  */
 // put your implememtation of add() here below it documentation
+void add(uint16_t i)
+{
+    uint16_t dr  = DR(i);     // destination register
+    uint16_t sr1 = SR1(i);    // first source register
+
+    if (FIMM(i) == 0) {
+        // Register mode: ADD SR1 + SR2
+        uint16_t sr2 = SR2(i);
+        reg[dr] = reg[sr1] + reg[sr2];
+    }
+    else {
+        // Immediate mode: ADD SR1 + imm5
+        uint16_t imm5 = IMM5(i);
+        imm5 = sign_extend(imm5, 5);
+        reg[dr] = reg[sr1] + imm5;
+    }
+
+    update_flags(dr);
+}
 
 /** @brief logical AND operation
  *
