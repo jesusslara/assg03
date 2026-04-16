@@ -506,6 +506,25 @@ void trap(uint16_t i)
  *   in this routine.
  */
 // put your implememtation of start() here below its documentation
+void start(uint16_t offset)
+{
+    // Initialize PC to starting address + offset
+    reg[RPC] = PC_START + offset;
+
+    running = true;
+
+    while (running)
+    {
+        // Fetch
+        uint16_t instr = mem_read(reg[RPC]++);
+
+        // Decode
+        uint16_t opcode = OPC(instr);
+
+        // Execute
+        optable[opcode](instr);
+    }
+}
 
 /** @brief load an LC-3 machine instruction image
  *
