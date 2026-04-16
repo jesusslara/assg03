@@ -183,6 +183,19 @@ uint16_t PC_START = 0x3000;
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of ld() here below it documentation
+void ld(uint16_t i)
+{
+    uint16_t dr = DR(i);          // destination register
+    uint16_t pc_offset = OFF9(i); // 9-bit signed offset
+
+    pc_offset = sign_extend(pc_offset, 9);
+
+    uint16_t address = reg[RPC] + pc_offset;
+
+    reg[dr] = mem_read(address);
+
+    update_flags(dr);
+}
 
 /** @brief load indirect
  *
